@@ -16,7 +16,7 @@ export function useTypingTest({ customText, useCustom }: UseTypingTestProps) {
   const [testOver, setTestOver] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [target, setTarget] = useState(() => getRandomSample(SAMPLES));
-  const [graphemes, setGraphemes] = useState<string[]>(() => splitGraphemes(getRandomSample(SAMPLES)));
+  const [graphemes, setGraphemes] = useState<string[]>(() => splitGraphemes(target));
   const [typedGraphemes, setTypedGraphemes] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [wpm, setWpm] = useState(0);
@@ -31,6 +31,7 @@ export function useTypingTest({ customText, useCustom }: UseTypingTestProps) {
   const correctCount = typedGraphemes.filter((ch, i) => ch === graphemes[i]).length;
   const totalTyped = typedGraphemes.length;
 
+  // New Test (Randomizes Text)
   const restart = useCallback(
     (sec: number) => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -56,6 +57,24 @@ export function useTypingTest({ customText, useCustom }: UseTypingTestProps) {
     },
     [customText, useCustom]
   );
+
+  // Restart Same (Keeps Current Text)
+  const resetSame = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (wpmRef.current) clearInterval(wpmRef.current);
+
+    setTimeLeft(selTime);
+    setStarted(false);
+    setFinished(false);
+    setTestOver(false);
+    setStartTime(null);
+    startTimeRef.current = null;
+    setTypedGraphemes([]);
+    setInputValue("");
+    setWpm(0);
+    setAccuracy(0);
+    setWpmHistory([]);
+  }, [selTime]);
 
   // Timer
   useEffect(() => {
@@ -143,6 +162,7 @@ export function useTypingTest({ customText, useCustom }: UseTypingTestProps) {
     correctCount, totalTyped,
     wpmHistory,
     restart,
+    resetSame,
     handleInput,
     setTestOver,
     setFinished,

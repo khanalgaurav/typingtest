@@ -137,7 +137,8 @@ export function NepaliKeyboard({ highlight, isShiftActive = false, className = "
   return (
     <div className={`
       inline-flex flex-col gap-1.5 p-4 rounded-3xl border border-white/10
-      bg-[#1a1a1a]/40 origin-top scale-95 lg:scale-100
+      dark:bg-[#1a1a1a]/40 origin-top scale-95 lg:scale-100 bg-accent/20
+
       ${className}
     `}>
       {/* Row 1 */}

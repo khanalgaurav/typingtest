@@ -1,17 +1,18 @@
 "use client";
 import { RatingBadge, Sparkline } from "@/components/ui/SharedUI";
-import { IconX, IconRefresh, IconChart2 } from "@/components/ui/Icons";
+import { IconX, IconRefresh, IconChart2, IconRotateClockwise } from "@/components/ui/Icons";
 import type { ResultData } from "@/types";
 
 interface ResultsModalProps {
   data: ResultData;
   wpmHistory: number[];
-  onRetry: () => void;
+  onRetry: () => void;     // Restart same sentences
+  onNewTest: () => void;   // Start new sentences
   onClose: () => void;
   onStats: () => void;
 }
 
-export function ResultsModal({ data, wpmHistory, onRetry, onClose, onStats }: ResultsModalProps) {
+export function ResultsModal({ data, wpmHistory, onRetry, onNewTest, onClose, onStats }: ResultsModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -59,25 +60,38 @@ export function ResultsModal({ data, wpmHistory, onRetry, onClose, onStats }: Re
           </div>
         )}
 
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={onRetry}
-            className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-bg font-semibold rounded-lg py-2.5 text-sm transition-colors"
-          >
-            <IconRefresh size={14} /> Try Again
-          </button>
-          <button
-            onClick={onClose}
-            className="flex items-center justify-center gap-2 px-4 border border-border hover:border-accent/50 text-foreground/70 hover:text-foreground rounded-lg py-2.5 text-sm transition-colors"
-          >
-            Review
-          </button>
-          <button
-            onClick={onStats}
-            className="flex items-center justify-center gap-2 px-4 border border-border hover:border-accent/50 text-foreground/70 hover:text-foreground rounded-lg py-2.5 text-sm transition-colors"
-          >
-            <IconChart2 size={14} /> Stats
-          </button>
+        <div className="flex flex-col gap-2">
+          {/* Main Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={onRetry}
+              className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors"
+            >
+              <IconRotateClockwise size={14} /> Try Again
+            </button>
+            <button
+              onClick={onNewTest}
+              className="flex-1 flex items-center justify-center gap-2 bg-card border border-border hover:bg-white/5 text-foreground font-semibold rounded-lg py-2.5 text-sm transition-colors"
+            >
+              <IconRefresh size={14} /> New Test
+            </button>
+          </div>
+          
+          {/* Secondary Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={onClose}
+              className="flex-1 flex items-center justify-center gap-2 px-4 border border-border hover:border-accent/50 text-foreground/70 hover:text-foreground rounded-lg py-2.5 text-sm transition-colors"
+            >
+              Review
+            </button>
+            <button
+              onClick={onStats}
+              className="flex-1 flex items-center justify-center gap-2 px-4 border border-border hover:border-accent/50 text-foreground/70 hover:text-foreground rounded-lg py-2.5 text-sm transition-colors"
+            >
+              <IconChart2 size={14} /> Stats
+            </button>
+          </div>
         </div>
       </div>
     </div>

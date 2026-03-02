@@ -32,7 +32,7 @@ export function StatsTab() {
   };
 
   return (
-    <div>
+    <div className=" p-8">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h2 className="text-lg font-bold text-foreground">Your Progress</h2>
         <div className="flex items-center gap-1.5">

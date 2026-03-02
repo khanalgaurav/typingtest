@@ -6,7 +6,7 @@ import { TextDisplay } from "@/components/ui/TextDisplay";
 import { NepaliKeyboard, getKeyHighlight } from "@/components/keyboard/NepaliKeyboard";
 import { ResultsModal } from "./ResultsModal";
 import { Toast, Sparkline, RatingBadge, StatCell } from "@/components/ui/SharedUI";
-import { IconRefresh, IconEdit } from "@/components/ui/Icons";
+import { IconRefresh, IconEdit, IconRotateClockwise } from "@/components/ui/Icons";
 
 export function TestTab({ onGoStats }: { onGoStats: () => void }) {
   const [customText, setCustomText] = useState("");
@@ -38,9 +38,15 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
     setShowResult(true);
   }, [test.testOver, test.correctCount, test.totalTyped, test.selTime]);
 
-  const handleRestart = (sec: number) => {
+  const handleNewTest = (sec: number) => {
     setShowResult(false);
     test.restart(sec);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  const handleRestartSame = () => {
+    setShowResult(false);
+    test.resetSame();
     setTimeout(() => inputRef.current?.focus(), 50);
   };
 
@@ -56,7 +62,7 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
           {[15, 30, 60, 0].map((s) => (
             <button
               key={s}
-              onClick={() => handleRestart(s)}
+              onClick={() => handleNewTest(s)}
               className={`px-4 py-1.5 rounded-xl text-xs font-mono transition-all ${
                 test.selTime === s ? "bg-accent text-white" : "hover:bg-white/5 text-foreground/50"
               }`}
@@ -69,7 +75,11 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
            <button onClick={() => setShowCustomPanel(!showCustomPanel)} className="p-2 hover:bg-white/5 rounded-full text-foreground/40 hover:text-accent transition-colors">
             <IconEdit size={18} />
           </button>
-          <button onClick={() => handleRestart(test.selTime)} className="p-2 hover:bg-white/5 rounded-full text-foreground/40 hover:text-accent transition-colors">
+          <button 
+            title="New Test"
+            onClick={() => handleNewTest(test.selTime)} 
+            className="p-2 hover:bg-white/5 rounded-full text-foreground/40 hover:text-accent transition-colors"
+          >
             <IconRefresh size={18} />
           </button>
         </div>
@@ -87,23 +97,34 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
             onClick={() => inputRef.current?.focus()}
           />
 
-          {/* Large Textarea Input */}
-          <div className="relative">
+          {/* Large Textarea Input Wrapper */}
+          <div className="relative group">
             <textarea
               ref={inputRef}
               value={test.inputValue}
               onChange={(e) => test.handleInput(e as unknown as React.ChangeEvent<HTMLInputElement>)}
+              onKeyDown={(e) => {
+                if (e.ctrlKey && e.key === "Enter") {
+                  e.preventDefault();
+                  handleRestartSame();
+                }
+              }}
               spellCheck={false}
               autoFocus
-              className="w-full bg-card/40 border-2 border-border/40 focus:border-accent/50 rounded-2xl p-6 text-2xl font-serif outline-none transition-all resize-none h-22 shadow-md nepali-scroll"
+              className="w-full bg-card/40 border-2 border-border/40 focus:border-accent/50 rounded-2xl py-6 pl-6 pr-24 text-2xl font-serif outline-none transition-all resize-none h-22 shadow-md scrollbar-hide"
               placeholder="यहाँ टाइप गर्न सुरु गर्नुहोस्..."
               style={{ fontFamily: "'Noto Serif Devanagari', serif" }}
             />
-            {/* {!test.started && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 uppercase tracking-[0.2em] text-sm">
-                Start typing to begin
-              </div>
-            )} */}
+            
+            {/* Restart Button inside Textarea */}
+            <button
+              onClick={handleRestartSame}
+              title="Restart Same Test"
+              className="absolute top-1/2 -translate-y-1/2 right-4 p-2.5 bg-background/50 hover:bg-accent hover:text-white border border-border/50 rounded-xl text-foreground/40 transition-all  shadow-lg backdrop-blur-md flex items-center gap-2"
+            >
+              <IconRotateClockwise size={16} />
+              <span className="text-[10px] font-bold uppercase tracking-tighter">Restart</span>
+            </button>
           </div>
         </div>
 
@@ -113,11 +134,8 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
             <StatCell label="Speed" value={test.wpm} unit="WPM" />
             <StatCell label="Accuracy" value={test.accuracy} unit="%" valueColor={test.accuracy > 90 ? "text-accent" : "text-yellow-500"} />
             <StatCell label="Time Left" value={test.selTime === 0 ? "∞" : `${test.timeLeft}s`} />
-            
-            {/* {test.wpm > 0 && <RatingBadge wpm={test.wpm} />} */}
           </div>
 
-          {/* Sidebar Sparkline */}
           <div className="bg-card/30 border border-border/50 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-4">
               <span className="text-[10px] font-mono uppercase tracking-widest text-foreground/40">Speed Trend</span>
@@ -130,7 +148,6 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
         </div>
       </div>
 
-      {/* ── Keyboard Area ─────────────────────────────────────────── */}
       <div className="flex justify-start w-full overflow-hidden ">
         <NepaliKeyboard 
           highlight={test.finished ? undefined : highlight} 
@@ -138,7 +155,6 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
         />
       </div>
 
-      {/* Custom Text Panel Overlay */}
       {showCustomPanel && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
           <div className="bg-card border border-border p-6 rounded-3xl w-full max-w-lg shadow-2xl">
@@ -147,11 +163,11 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               className="w-full h-40 bg-background border border-border rounded-xl p-4 mb-4 outline-none focus:border-accent"
-              placeholder="Paste your Nepali text here..."
+              placeholder="Paste your Nepali/ English text here then Practice 😘..."
             />
             <div className="flex gap-2">
               <button 
-                onClick={() => { setUseCustom(true); handleRestart(test.selTime); setShowCustomPanel(false); }}
+                onClick={() => { setUseCustom(true); handleNewTest(test.selTime); setShowCustomPanel(false); }}
                 className="flex-1 bg-accent py-3 rounded-xl font-bold"
               >
                 Apply Text
@@ -166,7 +182,8 @@ export function TestTab({ onGoStats }: { onGoStats: () => void }) {
         <ResultsModal 
           data={resultData} 
           wpmHistory={test.wpmHistory} 
-          onRetry={() => handleRestart(test.selTime)} 
+          onRetry={handleRestartSame} 
+          onNewTest={() => handleNewTest(test.selTime)}
           onClose={() => setShowResult(false)} 
           onStats={() => { setShowResult(false); onGoStats(); }} 
         />
