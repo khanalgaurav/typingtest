@@ -111,7 +111,7 @@ export default function NepaliTypingTest() {
           </header> */}
 
           {/* Content */}
-          <main className="flex-1 px-6 py-5 overflow-y-auto nepali-scroll">
+          <main className="flex-1 overflow-y-auto nepali-scroll">
             {tab === "test"  && <TestTab  onGoStats={() => setTab("stats")} />}
             {tab === "learn" && <LearnTab />}
             {tab === "stats" && <StatsTab />}

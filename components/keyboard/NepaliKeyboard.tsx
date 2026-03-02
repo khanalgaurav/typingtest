@@ -2,14 +2,6 @@
 
 import React from "react";
 
-/**
- * Nepali Unicode Traditional Keyboard Layout
- * Updates:
- * 1. Neon Highlight: Vibrant borders instead of solid fills for better character legibility.
- * 2. White Contrast: Active characters turn pure white with drop-shadow.
- * 3. Proportional Scaling: Wide landscape keys for a natural desktop feel.
- */
-
 export interface KeyHighlight {
   keys: string[];
   needsShift: boolean;
@@ -24,6 +16,7 @@ interface KeyboardProps {
 
 type KeyDef = [string, string, string];
 
+// --- LOGIC PRESERVED EXACTLY ---
 const ROW1: KeyDef[] = [
   ["`","ञ","॥"], ["1","१","ज्ञ"], ["2","२","ई"], ["3","३","घ"], ["4","४","द्ध"],
   ["5","५","छ"], ["6","६","ट"], ["7","७","ठ"], ["8","८","ड"], ["9","९","ढ"],
@@ -51,7 +44,6 @@ function buildCharMap(): Map<string, KeyHighlight> {
       if (shift) m.set(shift, { keys: [k], needsShift: true, isSpace: false });
     });
   });
-
   const matras = [
     { char: "ो", key: "j", shift: true }, { char: "ौ", key: "b", shift: true },
     { char: "ा", key: "f", shift: false }, { char: "ि", key: "l", shift: false },
@@ -76,52 +68,47 @@ export function getKeyHighlight(ch: string): KeyHighlight {
   return CHAR_MAP.get(ch.charAt(0)) ?? { keys: [], needsShift: false, isSpace: false };
 }
 
+// --- ENHANCED READABILITY COMPONENTS ---
+
 function Key({ physKey, normal, shift, activeKeys, needsShift, isShiftActive }: any) {
   const isActive = activeKeys.includes(physKey);
   const isShiftNeeded = isActive && needsShift;
 
   return (
     <div className={`
-      relative flex flex-col items-center justify-center rounded-xl border-2 transition-all duration-150 select-none
-      w-18 h-14 overflow-hidden
+      relative flex flex-col items-center justify-center rounded-xl border transition-all duration-100 select-none
+      w-12 h-12 shrink-0
       ${isActive 
         ? (needsShift 
-            ? "bg-amber-500/10 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.4)] scale-105 z-10" 
-            : "bg-indigo-500/10 border-indigo-400 shadow-[0_0_15px_rgba(129,140,248,0.4)] scale-105 z-10")
-        : "bg-white/80 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600"
+            ? "bg-amber-500 border-amber-400 text-white shadow-[0_0_20px_rgba(245,158,11,0.5)] scale-105 z-10" 
+            : "bg-accent border-accent text-white shadow-[0_0_20px_rgba(0,173,181,0.5)] scale-105 z-10")
+        : "bg-card/40 border-white/5 hover:border-white/20"
       }
     `}>
-      {/* SHIFT CHAR (TOP) */}
-      <div className={`flex items-center justify-center w-full h-1/2`}>
-        <span className={`text-[15px] font-black transition-all duration-200
-          ${isShiftNeeded 
-            ? "text-amber-500 scale-125 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" 
-            : isShiftActive 
-              ? "text-indigo-500 dark:text-indigo-400" 
-              : "text-slate-400 dark:text-slate-600 opacity-70"
-          }`}>
-          {shift}
-        </span>
-      </div>
+      {/* SHIFT CHARACTER (TOP) - INCREASED SIZE AND WEIGHT */}
+      <span className={`text-[15px] font-black leading-none absolute top-1.5 transition-all
+        ${isShiftNeeded 
+          ? "text-white scale-110" 
+          : isShiftActive 
+            ? "text-amber-400 opacity-100 scale-105 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" 
+            : "text-foreground/30"
+        }`}>
+        {shift}
+      </span>
 
-      {/* SEPARATOR */}
-      <div className={`w-3/4 h-[1px] ${isActive ? "bg-transparent" : "bg-slate-100 dark:bg-slate-800"}`} />
+      {/* NORMAL CHARACTER (BOTTOM) */}
+      <span className={`text-[20px] font-bold leading-none mt-4 transition-all
+        ${isActive && !needsShift 
+          ? "text-white" 
+          : isShiftActive 
+            ? "opacity-5" /* Hide normal char when shift is held */
+            : "text-foreground/80"
+        }`}>
+        {normal}
+      </span>
 
-      {/* NORMAL CHAR (BOTTOM) */}
-      <div className={`flex items-center justify-center w-full h-1/2`}>
-        <span className={`text-[19px] font-bold transition-all duration-200
-          ${isActive && !needsShift 
-            ? "text-indigo-500 scale-125 drop-shadow-[0_0_8px_rgba(129,140,248,0.8)]" 
-            : isShiftActive 
-              ? "opacity-20 scale-90 text-slate-400" 
-              : "text-slate-800 dark:text-slate-200"
-          }`}>
-          {normal}
-        </span>
-      </div>
-
-      {/* PHYSICAL KEY LABEL */}
-      <span className="absolute bottom-1 left-1.5 text-[8px] font-black uppercase text-slate-300 dark:text-slate-700 font-mono">
+      {/* PHYS KEY LABEL (Subtle) */}
+      <span className="absolute bottom-0.5 right-1 text-[6px] font-mono text-foreground/10 uppercase">
         {physKey}
       </span>
     </div>
@@ -132,10 +119,10 @@ function SpecialKey({ label, widthCls, isShiftKey, needsShift, isShiftActive }: 
   const lit = isShiftKey && (isShiftActive || needsShift);
   return (
     <div className={`
-      h-14 flex items-center justify-center rounded-xl border-2 text-[10px] font-black tracking-widest uppercase select-none transition-all px-3 ${widthCls}
+      h-12 flex items-center justify-center rounded-xl border text-[9px] font-mono font-bold tracking-tighter uppercase select-none transition-all px-2 shrink-0 ${widthCls}
       ${lit 
-        ? "bg-amber-500 border-amber-400 text-white shadow-lg shadow-amber-500/30" 
-        : "bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500"}
+        ? "bg-amber-500 border-amber-400 text-white shadow-lg shadow-amber-500/20" 
+        : "bg-card/40 border-white/5 text-foreground/30"}
     `}>
       {label}
     </div>
@@ -149,46 +136,46 @@ export function NepaliKeyboard({ highlight, isShiftActive = false, className = "
 
   return (
     <div className={`
-      inline-flex flex-col gap-1.5 p-5 rounded-[2.5rem] border-2 shadow-2xl backdrop-blur-md
-      bg-white/40 dark:bg-slate-950/70 border-slate-200/60 dark:border-slate-800/60
+      inline-flex flex-col gap-1.5 p-4 rounded-3xl border border-white/10
+      bg-[#1a1a1a]/40 origin-top scale-95 lg:scale-100
       ${className}
     `}>
       {/* Row 1 */}
       <div className={`flex ${rowGap}`}>
         {ROW1.map(([k, n, s]) => <Key key={k} physKey={k} normal={n} shift={s} activeKeys={activeKeys} needsShift={needsShift} isShiftActive={isShiftActive} />)}
-        <SpecialKey label="⌫" widthCls="w-24" />
+        <SpecialKey label="BACK" widthCls="w-16" />
       </div>
 
       {/* Row 2 */}
       <div className={`flex ${rowGap}`}>
-        <SpecialKey label="TAB" widthCls="w-20" />
+        <SpecialKey label="TAB" widthCls="w-14" />
         {ROW2.map(([k, n, s]) => <Key key={k} physKey={k} normal={n} shift={s} activeKeys={activeKeys} needsShift={needsShift} isShiftActive={isShiftActive} />)}
-        <SpecialKey label="ENTER" widthCls="w-28" />
+        <SpecialKey label="ENTER" widthCls="w-16" />
       </div>
 
       {/* Row 3 */}
       <div className={`flex ${rowGap}`}>
-        <SpecialKey label="CAPS" widthCls="w-24" />
+        <SpecialKey label="CAPS" widthCls="w-16" />
         {ROW3.map(([k, n, s]) => <Key key={k} physKey={k} normal={n} shift={s} activeKeys={activeKeys} needsShift={needsShift} isShiftActive={isShiftActive} />)}
-        <div className="w-24 h-14" />
+        <div className="w-14 h-12 rounded-xl border border-white/5 bg-white/5 opacity-20" />
       </div>
 
       {/* Row 4 */}
       <div className={`flex ${rowGap}`}>
-        <SpecialKey label="SHIFT" widthCls="w-32" isShiftKey needsShift={needsShift} isShiftActive={isShiftActive} />
+        <SpecialKey label="SHIFT" widthCls="w-20" isShiftKey needsShift={needsShift} isShiftActive={isShiftActive} />
         {ROW4.map(([k, n, s]) => <Key key={k} physKey={k} normal={n} shift={s} activeKeys={activeKeys} needsShift={needsShift} isShiftActive={isShiftActive} />)}
-        <SpecialKey label="SHIFT" widthCls="w-36" isShiftKey needsShift={needsShift} isShiftActive={isShiftActive} />
+        <SpecialKey label="SHIFT" widthCls="w-28" isShiftKey needsShift={needsShift} isShiftActive={isShiftActive} />
       </div>
 
       {/* Row 5 */}
-      <div className={`flex justify-center mt-2 ${rowGap}`}>
+      <div className={`flex justify-center mt-1 ${rowGap}`}>
         <div className={`
-          h-14 w-[40rem] rounded-2xl border-2 flex items-center justify-center text-[11px] font-black uppercase tracking-[0.4em] transition-all
+          h-11 w-[24rem] rounded-2xl border flex items-center justify-center text-[10px] font-mono font-bold uppercase tracking-[0.5em] transition-all
           ${highlight?.isSpace 
-            ? 'bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/40 scale-[1.02]' 
-            : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'}
+            ? 'bg-accent border-accent text-white shadow-[0_0_25px_rgba(0,173,181,0.4)]' 
+            : 'bg-card/40 border-white/5 text-foreground/20'}
         `}>
-          SPACE BAR
+          SPACE
         </div>
       </div>
     </div>
