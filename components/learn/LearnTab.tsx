@@ -247,8 +247,8 @@ function LessonPanel({
           <span className="text-foreground/20 text-[10px] font-mono">#{String(LESSONS.findIndex((l) => l.id === lesson.id) + 1).padStart(2, "0")}</span>
         </div>
         <div className="w-px h-8 bg-border flex-shrink-0" />
-        <div className="flex items-baseline gap-3 min-w-0 flex-1">
-          <h2 className="text-xl font-bold text-foreground leading-none whitespace-nowrap truncate" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>{lesson.title}</h2>
+        <div className="flex items-baseline gap-3 min-w-0 flex-1 ">
+          <h2 className="text-xl font-bold text-foreground leading-none whitespace-nowrap truncate py-2" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>{lesson.title}</h2>
           <span className="text-[12px] text-foreground/35 truncate hidden sm:block">{lesson.subtitle}</span>
         </div>
         <div className="flex items-center gap-5 flex-shrink-0 ml-auto">

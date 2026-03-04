@@ -95,13 +95,51 @@ const SETUP_STEPS = [
 ];
 
 const FEATURES = [
-  { icon: "⚡", label: "Real-time WPM",    desc: "Track your speed as you type"           },
-  { icon: "◎", label: "Accuracy meter",   desc: "Mistake-by-mistake breakdown"            },
-  { icon: "↻", label: "Auto-loop lessons",desc: "Repeat until perfect"                    },
-  { icon: "⌨", label: "Neon key guide",   desc: "Next key highlighted on-screen"          },
-  { icon: "⇄", label: "Shuffle mode",     desc: "Random order keeps you sharp"            },
-  { icon: "📈", label: "Progress history", desc: "WPM trend & personal bests"             },
+  { id: 'wpm',     label: "Real-time WPM",    desc: "Watch your words per minute climb in real-time.",      color: "#00ADB5" },
+  { id: 'acc',     label: "Accuracy Meter",   desc: "Precision tracking with a mistake-by-mistake breakdown.", color: "#10b981" },
+  { id: 'loop',    label: "Auto-loop",        desc: "Lessons repeat automatically until you hit perfection.", color: "#6366f1" },
+  { id: 'neon',    label: "Neon Key Guide",   desc: "Dynamic on-screen highlights for the next key strike.", color: "#f43f5e" },
+  { id: 'shuffle', label: "Shuffle Mode",     desc: "Randomize letter order to prevent muscle memory traps.", color: "#fb923c" },
+  { id: 'stats',   label: "Progress History", desc: "Visualize your growth with trend lines and bests.",      color: "#8b5cf6" },
 ];
+
+// Helper to render the right SVG for each feature
+function FeatureIcon({ id, color }: { id: string; color: string }) {
+  const props = { size: 24, strokeWidth: 2, color };
+  switch (id) {
+    case 'wpm': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    );
+    case 'acc': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
+      </svg>
+    );
+    case 'loop': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" /><polyline points="21 3 21 8 16 8" />
+      </svg>
+    );
+    case 'neon': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2" /><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10" />
+      </svg>
+    );
+    case 'shuffle': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 3 21 3 21 8" /><line x1="4" y1="20" x2="21" y2="3" /><polyline points="21 16 21 21 16 21" /><line x1="15" y1="15" x2="21" y2="21" /><line x1="4" y1="4" x2="9" y2="9" />
+      </svg>
+    );
+    case 'stats': return (
+      <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={props.strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
+      </svg>
+    );
+    default: return null;
+  }
+}
 
 const TESTIMONIALS = [
   { name: "Sanjay M.",    text: "Went from 12 WPM to 48 WPM in two weeks. The key guide is a game changer.",  stars: 5 },
@@ -188,13 +226,13 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
             </div>
           </div>
 
-          <div className="flex-shrink-0 relative">
+          <div className="flex-shrink-0 relative hidden lg:block">
             <div
-              className="w-72 h-72 rounded-[40px] border border-border bg-card/60 flex flex-col items-center justify-center gap-6 shadow-2xl"
+              className="w-96 h-96 rounded-[40px] border border-border bg-card/60 flex flex-col items-center justify-center gap-6 shadow-2xl"
               style={{ boxShadow: "0 0 60px rgba(0,173,181,0.08), 0 20px 80px rgba(0,0,0,0.4)" }}
             >
               <div className="transform scale-110">
-                <Image src="/LogoTypingFull.png" alt="Logo" width={220} height={220} />
+                <Image src="/LogoTypingFull.png" alt="Logo" width={300} height={300} />
               </div>
               <div className="flex flex-col items-center gap-2">
                 <span className="text-xs font-mono text-foreground/30 tracking-[0.2em] uppercase font-bold">Unicode Traditional</span>
@@ -315,20 +353,47 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
         </section>
 
         {/* ── FEATURES ───────────────────────────────────────────── */}
-        <section className="flex flex-col gap-8">
-          <div>
-            <p className="text-xs font-mono tracking-[0.25em] uppercase text-accent font-bold mb-2">Capabilities</p>
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Everything you need</h2>
+        <section className="flex flex-col gap-10">
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-mono tracking-[0.25em] uppercase text-accent font-bold">Capabilities</p>
+            <h2 className="text-4xl font-black text-foreground tracking-tight">Built for Performance</h2>
+            <p className="text-base text-foreground/40 max-w-xl">Every feature is designed to bridge the gap between thinking in Nepali and typing in Nepali.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f) => (
-              <div key={f.label} className="bg-card/40 border border-border rounded-[24px] px-6 py-6 flex items-start gap-4 hover:border-accent/30 hover:bg-card/70 transition-all group">
-                <span className="text-2xl leading-none group-hover:scale-125 transition-transform duration-300">{f.icon}</span>
-                <div>
-                  <p className="text-[15px] font-bold text-foreground/80 leading-tight">{f.label}</p>
-                  <p className="text-[13px] text-foreground/35 mt-1.5 leading-relaxed">{f.desc}</p>
+              <div 
+                key={f.label} 
+                className="group relative bg-card/40 border border-border rounded-[32px] p-8 overflow-hidden transition-all duration-500 hover:border-border/80 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/20"
+              >
+                {/* Animated Glow Background */}
+                <div 
+                  className="absolute -right-8 -top-8 w-32 h-32 blur-[60px] rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+                  style={{ backgroundColor: f.color }}
+                />
+                
+                {/* Icon Container */}
+                <div 
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-[5deg]"
+                  style={{ background: `${f.color}10`, border: `1px solid ${f.color}20` }}
+                >
+                  <FeatureIcon id={f.id} color={f.color} />
                 </div>
+
+                {/* Text Content */}
+                <div className="relative z-10 flex flex-col gap-2">
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-white transition-colors duration-300">
+                    {f.label}
+                  </h3>
+                  <p className="text-[15px] text-foreground/40 leading-relaxed group-hover:text-foreground/60 transition-colors duration-300">
+                    {f.desc}
+                  </p>
+                </div>
+
+                {/* Decorative "Ghost" Text for modern look */}
+                <span className="absolute -bottom-4 -right-2 text-6xl font-black text-foreground/[0.02] select-none pointer-events-none group-hover:text-foreground/[0.04] transition-colors uppercase italic">
+                  {f.id}
+                </span>
               </div>
             ))}
           </div>

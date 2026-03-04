@@ -110,15 +110,15 @@ export default function NepaliTypingTest() {
           {/* Logo Area - Bigger & Bolder */}
           <div className={[
             "flex items-center border-b border-border transition-all duration-300",
-            expanded ? "px-5 py-6 gap-4" : "px-0 py-6 justify-center",
+            expanded ? "px-5 py-2 gap-4" : "px-0 py-2 justify-center",
           ].join(" ")}>
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex-shrink-0 transform hover:scale-105 transition-transform">
-                <Image src="/LogoTyping.png" alt="Logo" width={expanded ? 48 : 40} height={expanded ? 48 : 40} />
+            <div className="flex items-center gap-3 min-w-0 hover:cursor-pointer" onClick={() => setTab("home")}>
+              <div>
+                <Image src="/LogoTyping.png" alt="Logo" width={expanded ? 80 : 80} height={expanded ? 80 : 80} />
               </div>
               {expanded && (
                 <div className="overflow-hidden">
-                  <p className="text-[15px] font-bold text-foreground leading-tight tracking-tight">
+                  <p className="text-lg font-bold text-foreground leading-tight tracking-tight pt-1">
                     नेपाली टाइपिङ टेस्ट
                   </p>
                   <p className="text-[10px] font-mono text-accent tracking-widest uppercase mt-0.5">
