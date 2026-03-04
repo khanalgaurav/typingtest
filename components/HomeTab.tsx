@@ -38,29 +38,28 @@ function IconStar({ size = 14 }: { size?: number }) {
   );
 }
 
-// Decorative Devanagari characters for the background
 const BG_CHARS = ["क", "ख", "ग", "घ", "ङ", "च", "छ", "ज", "झ", "ञ", "ट", "ठ", "ड", "ढ", "ण", "त", "थ", "द", "ध", "न", "प", "फ", "ब", "भ", "म", "य", "र", "ल", "व", "श", "ष", "स", "ह", "अ", "आ", "इ", "ई", "उ", "ऊ", "ए", "ऐ", "ओ", "औ"];
 
 const SETUP_STEPS = [
   {
     num: "01",
     nepali: "डाउनलोड",
-    title: "Download",
+    title: "Download Layout",
     desc: "Get the official Nepali Unicode Traditional keyboard layout from LTK (Language Technology Kendra).",
     detail: "Free, open-source, maintained by the Nepal government's language technology body.",
     action: { label: "Download from ltk.org.np", href: "https://ltk.org.np/downloads.php" },
-    icon: <IconDownload size={20} />,
+    icon: <IconDownload size={22} />,
     color: "#00ADB5",
   },
   {
     num: "02",
     nepali: "इन्स्टल",
-    title: "Install",
+    title: "Install Package",
     desc: "Extract the downloaded .zip file and run setup.exe with administrator privileges.",
     detail: "During installation, keep all default options selected. Restart may be required.",
     action: null,
     icon: (
-      <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2"/>
         <line x1="8" y1="21" x2="16" y2="21"/>
         <line x1="12" y1="17" x2="12" y2="21"/>
@@ -71,12 +70,12 @@ const SETUP_STEPS = [
   {
     num: "03",
     nepali: "एक्टिभेट",
-    title: "Activate",
+    title: "Activate Keyboard",
     desc: "Press Win + Space (or Alt + Shift) to switch to 'Nepali Unicode Traditional' keyboard.",
     detail: "You can switch back to English anytime using the same shortcut.",
     action: null,
     icon: (
-      <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="4" width="20" height="16" rx="2"/>
         <path d="M8 15h8M8 11h3M8 7h8"/>
       </svg>
@@ -86,11 +85,11 @@ const SETUP_STEPS = [
   {
     num: "04",
     nepali: "टाइप गर्नुहोस्",
-    title: "Start Typing",
+    title: "Start Practicing",
     desc: `You're all set! Click I'm Ready below to jump into the typing test and start practising.`,
     detail: "Begin with the Learn tab to understand character mappings before the speed test.",
     action: null,
-    icon: <IconKeyboard size={20} />,
+    icon: <IconKeyboard size={22} />,
     color: "#fb923c",
   },
 ];
@@ -121,15 +120,14 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
 
   return (
     <div className="relative overflow-hidden">
-
-      {/* ── Decorative Devanagari background scatter ───────────────── */}
+      {/* Decorative background */}
       <div className="pointer-events-none select-none absolute inset-0 overflow-hidden" aria-hidden>
         {BG_CHARS.slice(0, 24).map((ch, i) => (
           <span
             key={i}
-            className="absolute font-devanagari text-foreground/[0.025] font-bold"
+            className="absolute font-devanagari text-foreground/[0.02] font-bold"
             style={{
-              fontSize: `${28 + (i % 5) * 14}px`,
+              fontSize: `${32 + (i % 5) * 16}px`,
               left:  `${(i * 37 + 11) % 96}%`,
               top:   `${(i * 53 + 7)  % 110}%`,
               transform: `rotate(${(i % 7) * 8 - 24}deg)`,
@@ -140,121 +138,87 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
         ))}
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 py-10 flex flex-col gap-16">
+      <div className="relative max-w-6xl mx-auto px-6 py-12 flex flex-col gap-20">
 
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* HERO                                                       */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <section className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-
-          {/* Left: text */}
-          <div className="flex-1 flex flex-col gap-5">
-            {/* eyebrow */}
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-px bg-accent" />
-              <span className="text-[10px] font-mono tracking-[0.22em] uppercase text-accent/80">
+        {/* ── HERO ─────────────────────────────────────────────────── */}
+        <section className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 flex flex-col gap-6">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-px bg-accent" />
+              <span className="text-[12px] font-mono tracking-[0.25em] uppercase text-accent font-bold">
                 Nepali Unicode Traditional
               </span>
             </div>
 
-            <h1 className="text-5xl flex flex-col gap-5 font-bold tracking-tight leading-[1.08] text-foreground">
+            <h1 className="text-6xl lg:text-7xl flex flex-col gap-4 font-bold tracking-tight leading-[1.05] text-foreground">
               Nepali Typing<br />
-              <span
-                className="font-devanagari font-semibold"
-                style={{ color: "var(--color-accent)" }}
-              >
+              <span className="font-devanagari font-semibold text-accent">
                 सहजै सिक्नुहोस्
               </span>
             </h1>
 
-            <p className="text-[15px] text-foreground/50 leading-relaxed max-w-md">
+            <p className="text-lg text-foreground/50 leading-relaxed max-w-xl">
               The most complete Nepali Unicode Traditional typing trainer — real-time speed tests, structured lessons, and a neon key guide to get you typing fluently.
             </p>
 
-            {/* Stats row */}
-            <div className="flex gap-6 pt-1">
+            <div className="flex gap-10 pt-2">
               {[
                 { val: "11",    unit: "lessons"   },
                 { val: "4",     unit: "test modes" },
                 { val: "100%",  unit: "free"       },
               ].map(({ val, unit }) => (
                 <div key={unit} className="flex flex-col">
-                  <span className="text-2xl font-bold font-mono text-accent leading-none">{val}</span>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-foreground/35 mt-0.5">{unit}</span>
+                  <span className="text-3xl font-bold font-mono text-accent leading-none">{val}</span>
+                  <span className="text-[11px] font-mono uppercase tracking-widest text-foreground/35 mt-1.5 font-bold">{unit}</span>
                 </div>
               ))}
             </div>
 
-            {/* CTA */}
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex items-center gap-5 pt-4">
               <button
                 onClick={onStart}
-                className="flex items-center gap-2 px-6 py-3 bg-accent text-white font-bold text-sm rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all shadow-xl shadow-accent/25"
+                className="flex items-center gap-3 px-8 py-4 bg-accent text-white font-bold text-base rounded-2xl hover:bg-accent/85 active:scale-[0.97] transition-all shadow-2xl shadow-accent/25"
               >
                 Start Typing Now
-                <IconArrowRight size={15} />
+                <IconArrowRight size={18} />
               </button>
-              <span className="text-[11px] text-foreground/30 font-mono">
+              <span className="text-xs text-foreground/30 font-mono font-medium">
                 No account needed
               </span>
             </div>
           </div>
 
-          {/* Right: decorative keyboard badge */}
           <div className="flex-shrink-0 relative">
             <div
-              className="w-64 h-64 rounded-3xl border border-border bg-card/60 flex flex-col items-center justify-center gap-4 shadow-2xl"
-              style={{ boxShadow: "0 0 60px rgba(0,173,181,0.08), 0 20px 60px rgba(0,0,0,0.3)" }}
+              className="w-72 h-72 rounded-[40px] border border-border bg-card/60 flex flex-col items-center justify-center gap-6 shadow-2xl"
+              style={{ boxShadow: "0 0 60px rgba(0,173,181,0.08), 0 20px 80px rgba(0,0,0,0.4)" }}
             >
-              {/* Big Devanagari character */}
-              <div
-                className="text-[90px] leading-none font-devanagari font-bold select-none"
-                style={{ color: "var(--color-accent)" }}
-              >
-                <Image src="/LogoTypingFull.png" alt="Logo" width={200} height={200} />
+              <div className="transform scale-110">
+                <Image src="/LogoTypingFull.png" alt="Logo" width={220} height={220} />
               </div>
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-[11px] font-mono text-foreground/30 tracking-widest uppercase">Unicode Traditional</span>
-                <div className="flex gap-1 mt-1">
-                  {["क", "ख", "ग", "घ"].map((c) => (
-                    <span
-                      key={c}
-                      className="w-8 h-8 rounded-lg border border-border bg-card flex items-center justify-center text-sm font-devanagari text-foreground/60"
-                    >
-                      {c}
-                    </span>
-                  ))}
-                </div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-xs font-mono text-foreground/30 tracking-[0.2em] uppercase font-bold">Unicode Traditional</span>
               </div>
             </div>
-
-            {/* Floating accent dots */}
-            <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-accent/30 blur-sm" />
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-accent/20 blur-sm" />
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* SETUP GUIDE                                                */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <section className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1">
-            <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-accent/70">
+        {/* ── SETUP GUIDE ────────────────────────────────────────── */}
+        <section className="flex flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-mono tracking-[0.25em] uppercase text-accent font-bold">
               Setup Guide
             </p>
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">
               Get your keyboard ready
             </h2>
-            <p className="text-[13px] text-foreground/40 max-w-lg">
-              Before you start typing, you need the Nepali Traditional keyboard layout installed on your machine. Follow these 4 steps — takes less than 5 minutes.
+            <p className="text-base text-foreground/40 max-w-xl">
+              Before you start typing, you need the Nepali Traditional keyboard layout installed on your machine.
             </p>
           </div>
 
-          {/* Steps layout: left list + right detail panel */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
-            {/* Step list */}
-            <div className="lg:col-span-2 flex flex-col gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="lg:col-span-2 flex flex-col gap-3">
               {SETUP_STEPS.map((step, i) => {
                 const isDone   = doneSteps.includes(i);
                 const isActive = activeStep === i;
@@ -264,140 +228,83 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
                     key={step.num}
                     onClick={() => setActiveStep(i)}
                     className={[
-                      "w-full text-left flex items-center gap-4 px-4 py-3.5 rounded-2xl border transition-all duration-200",
+                      "w-full text-left flex items-center gap-5 px-5 py-4 rounded-2xl border transition-all duration-200",
                       isActive
-                        ? "border-accent/30 bg-accent/8 shadow-sm"
+                        ? "border-accent/30 bg-accent/5 shadow-sm"
                         : isDone
-                        ? "border-border/40 bg-foreground/[0.02] opacity-70"
-                        : "border-transparent hover:border-border hover:bg-foreground/[0.03]",
+                        ? "border-border/40 bg-foreground/[0.01] opacity-60"
+                        : "border-transparent hover:border-border hover:bg-foreground/[0.02]",
                     ].join(" ")}
                   >
-                    {/* Circle indicator */}
                     <div
-                      className="w-9 h-9 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                      className="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
                       style={{
                         borderColor: isDone ? "#22c55e" : isActive ? step.color : "var(--color-border)",
-                        background:  isDone ? "#22c55e18" : isActive ? `${step.color}15` : "transparent",
+                        background:  isDone ? "#22c55e15" : isActive ? `${step.color}15` : "transparent",
                         color:       isDone ? "#22c55e"   : isActive ? step.color : "var(--color-foreground)",
-                        opacity:     isDone ? 0.9 : 1,
                       }}
                     >
-                      {isDone ? <IconCheck size={14} /> : (
-                        <span className="text-[10px] font-mono font-bold">{step.num}</span>
+                      {isDone ? <IconCheck size={16} /> : (
+                        <span className="text-xs font-mono font-bold">{step.num}</span>
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p
-                        className="text-[13px] font-semibold leading-tight"
-                        style={{ color: isActive ? step.color : undefined }}
-                      >
+                      <p className={`text-base font-bold leading-tight ${isActive ? '' : 'text-foreground/70'}`} style={{ color: isActive ? step.color : undefined }}>
                         {step.title}
                       </p>
-                      <p
-                        className="text-[10px] font-devanagari text-foreground/35 mt-0.5"
-                      >
+                      <p className="text-[12px] font-devanagari text-foreground/30 mt-1">
                         {step.nepali}
                       </p>
                     </div>
-
-                    {isActive && (
-                      <span style={{ color: step.color }} className="flex-shrink-0 opacity-60">
-                        <IconArrowRight size={14} />
-                      </span>
-                    )}
                   </button>
                 );
               })}
             </div>
 
-            {/* Detail panel */}
             <div className="lg:col-span-3">
               {(() => {
                 const step   = SETUP_STEPS[activeStep];
                 const isDone = doneSteps.includes(activeStep);
 
                 return (
-                  <div
-                    key={activeStep}
-                    className="h-full bg-card border border-border rounded-3xl p-6 flex flex-col gap-5 animate-in fade-in duration-200 shadow-sm"
-                  >
-                    {/* Step header */}
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${step.color}18`, color: step.color }}
-                      >
+                  <div key={activeStep} className="h-full bg-card border border-border rounded-[32px] p-8 flex flex-col gap-6 animate-in fade-in duration-300 shadow-sm">
+                    <div className="flex items-start gap-5">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `${step.color}15`, color: step.color }}>
                         {step.icon}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-widest" style={{ color: step.color }}>
-                            Step {step.num}
-                          </span>
-                          {isDone && (
-                            <span className="text-[9px] font-mono text-green-500 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">
-                              ✓ Done
-                            </span>
-                          )}
+                        <div className="flex items-center gap-3 mb-1.5">
+                          <span className="text-xs font-mono font-black uppercase tracking-widest" style={{ color: step.color }}>Step {step.num}</span>
+                          {isDone && <span className="text-[10px] font-mono text-green-500 bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-full font-bold">✓ COMPLETED</span>}
                         </div>
-                        <h3 className="text-xl font-bold text-foreground">{step.title}</h3>
-                        <p className="text-[11px] font-devanagari text-foreground/40 mt-0.5">{step.nepali}</p>
+                        <h3 className="text-2xl font-bold text-foreground">{step.title}</h3>
                       </div>
                     </div>
 
-                    {/* Divider */}
                     <div className="h-px bg-border" />
 
-                    {/* Description */}
-                    <div className="flex flex-col gap-3">
-                      <p className="text-[14px] text-foreground/70 leading-relaxed">{step.desc}</p>
-                      <div className="flex items-start gap-2.5 bg-foreground/[0.03] border border-border/50 rounded-xl px-4 py-3">
-                        <span className="text-accent mt-0.5 text-xs flex-shrink-0">ℹ</span>
-                        <p className="text-[12px] text-foreground/45 leading-relaxed">{step.detail}</p>
+                    <div className="flex flex-col gap-4">
+                      <p className="text-base text-foreground/70 leading-relaxed">{step.desc}</p>
+                      <div className="flex items-start gap-3.5 bg-foreground/[0.02] border border-border/50 rounded-2xl px-5 py-4">
+                        <span className="text-accent mt-1 text-sm flex-shrink-0">ℹ</span>
+                        <p className="text-sm text-foreground/45 leading-relaxed">{step.detail}</p>
                       </div>
                     </div>
 
-                    {/* Action area */}
-                    <div className="mt-auto flex items-center gap-3">
+                    <div className="mt-auto flex items-center gap-4">
                       {step.action ? (
-                        <a
-                          href={step.action.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all hover:-translate-y-px hover:shadow-lg"
-                          style={{
-                            background:   `${step.color}15`,
-                            borderColor:  `${step.color}35`,
-                            color:         step.color,
-                            boxShadow:    `0 4px 20px ${step.color}15`,
-                          }}
-                        >
-                          <IconDownload size={14} />
-                          {step.action.label}
+                        <a href={step.action.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-bold border transition-all hover:-translate-y-0.5" style={{ background: `${step.color}15`, borderColor: `${step.color}35`, color: step.color }}>
+                          <IconDownload size={16} /> {step.action.label}
                         </a>
                       ) : activeStep === SETUP_STEPS.length - 1 ? (
-                        <button
-                          onClick={onStart}
-                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-accent hover:bg-accent/85 active:scale-[0.97] transition-all shadow-lg shadow-accent/25"
-                        >
-                          I'm Ready to Type
-                          <IconArrowRight size={14} />
+                        <button onClick={onStart} className="flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-bold text-white bg-accent hover:bg-accent/85 active:scale-[0.97] transition-all shadow-xl shadow-accent/20">
+                          I'm Ready to Type <IconArrowRight size={16} />
                         </button>
                       ) : null}
 
-                      <button
-                        onClick={() => markDone(activeStep)}
-                        disabled={isDone}
-                        className={[
-                          "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-all",
-                          isDone
-                            ? "border-green-500/20 text-green-500/50 bg-green-500/5 cursor-not-allowed"
-                            : "border-border hover:bg-foreground/5 text-foreground/50 hover:text-foreground",
-                        ].join(" ")}
-                      >
-                        <IconCheck size={13} />
-                        {isDone ? "Completed" : "Mark as done"}
+                      <button onClick={() => markDone(activeStep)} disabled={isDone} className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold border transition-all ${isDone ? "border-green-500/20 text-green-500/40 bg-green-500/5" : "border-border hover:bg-foreground/5 text-foreground/50 hover:text-foreground"}`}>
+                        <IconCheck size={14} /> {isDone ? "Completed" : "Mark as done"}
                       </button>
                     </div>
                   </div>
@@ -407,111 +314,79 @@ export function HomeTab({ onStart }: { onStart: () => void }) {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* FEATURES                                                   */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <section className="flex flex-col gap-5">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-accent/70 mb-1">What's included</p>
-              <h2 className="text-2xl font-bold text-foreground tracking-tight">Everything you need</h2>
-            </div>
+        {/* ── FEATURES ───────────────────────────────────────────── */}
+        <section className="flex flex-col gap-8">
+          <div>
+            <p className="text-xs font-mono tracking-[0.25em] uppercase text-accent font-bold mb-2">Capabilities</p>
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">Everything you need</h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {FEATURES.map((f) => (
-              <div
-                key={f.label}
-                className="bg-card/40 border border-border rounded-2xl px-4 py-4 flex items-start gap-3 hover:border-accent/20 hover:bg-card/70 transition-all group"
-              >
-                <span className="text-xl leading-none mt-0.5 group-hover:scale-110 transition-transform">
-                  {f.icon}
-                </span>
+              <div key={f.label} className="bg-card/40 border border-border rounded-[24px] px-6 py-6 flex items-start gap-4 hover:border-accent/30 hover:bg-card/70 transition-all group">
+                <span className="text-2xl leading-none group-hover:scale-125 transition-transform duration-300">{f.icon}</span>
                 <div>
-                  <p className="text-[13px] font-semibold text-foreground/80 leading-tight">{f.label}</p>
-                  <p className="text-[11px] text-foreground/35 mt-0.5">{f.desc}</p>
+                  <p className="text-[15px] font-bold text-foreground/80 leading-tight">{f.label}</p>
+                  <p className="text-[13px] text-foreground/35 mt-1.5 leading-relaxed">{f.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* WHY TRADITIONAL + TESTIMONIALS                             */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-          {/* Why Traditional */}
-          <div className="bg-card/40 border border-border rounded-3xl p-6 flex flex-col gap-4">
+        {/* ── WHY TRADITIONAL + TESTIMONIALS ─────────────────────── */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-card/40 border border-border rounded-[32px] p-8 flex flex-col gap-6">
             <div>
-              <p className="text-[10px] font-mono tracking-[0.18em] uppercase text-accent/70 mb-1">Why this layout?</p>
-              <h3 className="text-lg font-bold text-foreground">Unicode Traditional</h3>
+              <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-accent font-bold mb-2">Standardized</p>
+              <h3 className="text-xl font-bold text-foreground">Why Unicode Traditional?</h3>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-5">
               {[
                 { en: "Standard in Nepal's government offices and media",    ne: "सरकारी कार्यालय र मिडियामा मानक"         },
                 { en: "Mirrors the classic Preeti font layout — easy switch", ne: "प्रिति फन्टसँग मिल्दो — सिक्न सजिलो"   },
                 { en: "Fully compatible across all modern platforms",         ne: "सबै आधुनिक प्लेटफर्ममा सुसंगत"         },
               ].map(({ en, ne }) => (
-                <div key={en} className="flex items-start gap-3">
-                  <span className="mt-0.5 text-accent flex-shrink-0"><IconCheck size={13} /></span>
+                <div key={en} className="flex items-start gap-4">
+                  <span className="mt-1 text-accent flex-shrink-0"><IconCheck size={14} /></span>
                   <div>
-                    <p className="text-[13px] text-foreground/70 leading-tight">{en}</p>
-                    <p className="text-[11px] font-devanagari text-foreground/35 mt-0.5">{ne}</p>
+                    <p className="text-[15px] text-foreground/70 leading-snug font-medium">{en}</p>
+                    <p className="text-xs font-devanagari text-foreground/30 mt-1.5">{ne}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Testimonials */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {TESTIMONIALS.map((t) => (
-              <div
-                key={t.name}
-                className="bg-card/40 border border-border rounded-2xl px-4 py-3.5 flex flex-col gap-2"
-              >
+              <div key={t.name} className="bg-card/40 border border-border rounded-[24px] px-6 py-5 flex flex-col gap-3">
                 <div className="flex items-center gap-1">
                   {Array.from({ length: t.stars }).map((_, i) => (
-                    <span key={i} className="text-amber-400"><IconStar size={11} /></span>
+                    <span key={i} className="text-amber-400"><IconStar size={12} /></span>
                   ))}
                 </div>
-                <p className="text-[13px] text-foreground/65 leading-relaxed italic">"{t.text}"</p>
-                <p className="text-[10px] font-mono text-foreground/30">— {t.name}</p>
+                <p className="text-[15px] text-foreground/65 leading-relaxed italic font-medium">"{t.text}"</p>
+                <p className="text-xs font-mono text-foreground/30 font-bold">— {t.name}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* BOTTOM CTA                                                 */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <section className="relative rounded-3xl border border-accent/20 bg-accent/5 px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 overflow-hidden">
-          {/* Glow */}
-          <div
-            className="pointer-events-none absolute -top-12 -left-12 w-64 h-64 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(0,173,181,0.12) 0%, transparent 70%)" }}
-          />
-          <div className="flex flex-col gap-2 relative">
-            <h3 className="text-2xl font-bold text-foreground tracking-tight">
-              Ready to start?
-            </h3>
-            <p className="text-[13px] text-foreground/45 max-w-sm">
-              Jump into the typing test, or explore lessons first — your progress is saved automatically.
-            </p>
+        {/* ── BOTTOM CTA ─────────────────────────────────────────── */}
+        <section className="relative rounded-[40px] border border-accent/20 bg-accent/5 px-10 py-14 flex flex-col sm:flex-row items-center justify-between gap-10 overflow-hidden">
+          <div className="pointer-events-none absolute -top-12 -left-12 w-80 h-80 rounded-full blur-[100px]" style={{ background: "radial-gradient(circle, rgba(0,173,181,0.15) 0%, transparent 70%)" }} />
+          <div className="flex flex-col gap-3 relative">
+            <h3 className="text-3xl font-bold text-foreground tracking-tight">Ready to start?</h3>
+            <p className="text-base text-foreground/40 max-w-sm">Jump into the typing test, or explore lessons first — your progress is saved automatically.</p>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0 relative">
-            <button
-              onClick={onStart}
-              className="flex items-center gap-2 px-7 py-3 bg-accent text-white font-bold rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all shadow-xl shadow-accent/30 text-sm"
-            >
-              Open Typing Test
-              <IconArrowRight size={14} />
+          <div className="flex items-center gap-5 flex-shrink-0 relative">
+            <button onClick={onStart} className="flex items-center gap-3 px-10 py-4 bg-accent text-white font-bold rounded-2xl hover:bg-accent/85 active:scale-[0.97] transition-all shadow-2xl shadow-accent/30 text-base">
+              Open Typing Test <IconArrowRight size={18} />
             </button>
           </div>
         </section>
 
-        {/* Bottom padding */}
         <div className="h-4" />
       </div>
     </div>

@@ -17,9 +17,9 @@ import Image from "next/image";
 const THEME_KEY = "nepali_theme_v42";
 const SIDEBAR_KEY = "nepali_sidebar_expanded_v1";
 
-// --- Additional Icons for Home Tab ---
+// --- Updated Icons with better default sizing ---
 
-function IconHome({ size = 16 }: { size?: number }) {
+function IconHome({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -28,78 +28,18 @@ function IconHome({ size = 16 }: { size?: number }) {
   );
 }
 
-function IconDownload({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
-  );
-}
-
-// --- Main Layout Component ---
-
 const TABS: {
   id: TabId;
   icon: React.FC<{ size?: number }>;
   label: string;
   sub: string;
   desc: string;
-  shortcut: string;
 }[] = [
-  {
-    id: "home",
-    icon: IconHome,
-    label: "Home",
-    sub: "सुरुवात",
-    desc: "Setup Guide",
-    shortcut: "H",
-  },
-  {
-    id: "test",
-    icon: IconKeyboard,
-    label: "Type",
-    sub: "अभ्यास",
-    desc: "Speed & accuracy test",
-    shortcut: "T",
-  },
-  {
-    id: "learn",
-    icon: IconBook,
-    label: "Learn",
-    sub: "सिकाइ",
-    desc: "Structured lessons",
-    shortcut: "L",
-  },
-  {
-    id: "stats",
-    icon: IconChart,
-    label: "Stats",
-    sub: "तथ्याङ्क",
-    desc: "Progress & trends",
-    shortcut: "S",
-  },
+  { id: "home",  icon: IconHome,     label: "Home",  sub: "सुरुवात", desc: "Setup Guide" },
+  { id: "test",  icon: IconKeyboard, label: "Type",  sub: "अभ्यास",  desc: "Speed & accuracy test" },
+  { id: "learn", icon: IconBook,     label: "Learn", sub: "सिकाइ",   desc: "Structured lessons" },
+  { id: "stats", icon: IconChart,    label: "Stats", sub: "तथ्याङ्क", desc: "Progress & trends" },
 ];
-
-const TAB_TITLES: Record<TabId, { title: string; subtitle: string }> = {
-  home: {
-    title: "Welcome & Setup",
-    subtitle: "नेपाली टाइपिङ सुरु गर्नु अघि · Getting your system ready",
-  },
-  test: {
-    title: "Typing Test",
-    subtitle: "नेपाली टाइपिङ अभ्यास · Type and track your speed",
-  },
-  learn: {
-    title: "Structured Lessons",
-    subtitle: "अक्षरबाट वाक्यसम्म · Characters → Words → Sentences",
-  },
-  stats: {
-    title: "Your Progress",
-    subtitle: "WPM trend, accuracy history & personal bests",
-  },
-};
 
 const TAB_COLORS: Record<TabId, string> = {
   home: "#6366f1",   // indigo
@@ -108,17 +48,17 @@ const TAB_COLORS: Record<TabId, string> = {
   stats: "#fb923c",  // orange
 };
 
-function IconChevronLeft({ size = 16 }: { size?: number }) {
+function IconChevronLeft({ size = 18 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="15 18 9 12 15 6" />
     </svg>
   );
 }
 
-function IconChevronRight({ size = 16 }: { size?: number }) {
+function IconChevronRight({ size = 18 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="9 18 15 12 9 6" />
     </svg>
   );
@@ -155,108 +95,90 @@ export default function NepaliTypingTest() {
 
   return (
     <div className={theme} style={{ minHeight: "100vh" }}>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@300;400;500;600&display=swap"
-        rel="stylesheet"
-      />
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@300;400;500;600&display=swap" rel="stylesheet" />
+      
       <div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
 
-        {/* ── Sidebar ─────────────────────────────────────────────────────── */}
+        {/* ── Updated Sidebar ─────────────────────────────────────────────────── */}
         <aside
           className={[
             "flex-shrink-0 flex flex-col sticky top-0 h-screen overflow-hidden",
-            "border-r border-border ",
-            "transition-all duration-300 ease-in-out",
-            "bg-card/60 ",
-            expanded ? "w-60" : "w-[72px]",
+            "border-r border-border bg-card/60 backdrop-blur-xl transition-all duration-300 ease-in-out",
+            expanded ? "w-72" : "w-[88px]", // Wider sidebar
           ].join(" ")}
-          style={{
-            boxShadow:
-              theme === "dark"
-                ? "inset -1px 0 0 rgba(255,255,255,0.04), 4px 0 24px rgba(0,0,0,0.25)"
-                : "inset -1px 0 0 rgba(0,0,0,0.04), 4px 0 20px rgba(0,0,0,0.06)",
-          }}
         >
-          {/* Logo Area */}
+          {/* Logo Area - Bigger & Bolder */}
           <div className={[
             "flex items-center border-b border-border transition-all duration-300",
-            expanded ? "px-4 py-4 gap-3 justify-between" : "px-0 py-4 justify-center",
+            expanded ? "px-5 py-6 gap-4" : "px-0 py-6 justify-center",
           ].join(" ")}>
-            <div className="flex items-center gap-1 min-w-0">
-              <div className="">
-                <Image src="/LogoTyping.png" alt="Logo" width={60} height={60} />
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex-shrink-0 transform hover:scale-105 transition-transform">
+                <Image src="/LogoTyping.png" alt="Logo" width={expanded ? 48 : 40} height={expanded ? 48 : 40} />
               </div>
               {expanded && (
-                <div className="overflow-hidden transition-all duration-300">
-                  <p className="text-[13px] font-semibold text-foreground whitespace-nowrap leading-tight tracking-tight">
-                    नेपाली टाइपिङ टेस्ट<br className="hidden sm:block" />Nepali Typing Test
+                <div className="overflow-hidden">
+                  <p className="text-[15px] font-bold text-foreground leading-tight tracking-tight">
+                    नेपाली टाइपिङ टेस्ट
                   </p>
-                  <p className="text-[9px] font-mono text-foreground/30 whitespace-nowrap tracking-widest uppercase mt-0.5">
-                    Unicode Traditional
+                  <p className="text-[10px] font-mono text-accent tracking-widest uppercase mt-0.5">
+                    Traditional
                   </p>
                 </div>
               )}
             </div>
-            {expanded && (
-              <button onClick={toggleSidebar} className="text-foreground/30 hover:text-foreground/70 transition-colors">
-                <IconChevronLeft size={13} />
-              </button>
-            )}
           </div>
 
-          <nav className="flex flex-col gap-1 px-2.5 pt-3 flex-1 overflow-hidden">
-            {!expanded && (
-              <button onClick={toggleSidebar} className="w-full h-8 mb-2 rounded-lg flex items-center justify-center text-foreground/25 hover:text-foreground/60 hover:bg-foreground/5 border border-transparent hover:border-border transition-all">
-                <IconChevronRight size={13} />
-              </button>
-            )}
-
+          <nav className="flex flex-col gap-2 px-3 pt-6 flex-1">
             {expanded && (
-              <p className="text-[9px] font-mono tracking-[0.14em] uppercase text-foreground/25 px-1 pb-1">Menu</p>
+              <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-foreground/30 px-3 pb-2">
+                Navigation
+              </p>
             )}
 
-            {TABS.map(({ id, icon: Icon, label, sub, desc, shortcut }) => {
+            {TABS.map(({ id, icon: Icon, label, sub, desc }) => {
               const isActive = tab === id;
-              const isHovered = hoveredTab === id;
               const accentColor = TAB_COLORS[id];
 
               return (
-                <div key={id} className="relative">
+                <div key={id} className="relative group">
                   <button
                     onClick={() => setTab(id)}
                     onMouseEnter={() => setHoveredTab(id)}
                     onMouseLeave={() => setHoveredTab(null)}
                     className={[
-                      "relative w-full flex items-center rounded-xl transition-all duration-200 overflow-hidden border",
-                      expanded ? "px-3 py-2.5 gap-3" : "py-2.5 justify-center",
+                      "relative w-full flex items-center rounded-2xl transition-all duration-200 overflow-hidden border",
+                      expanded ? "px-4 py-4 gap-4" : "py-4 justify-center",
                       isActive
-                        ? "border-accent/25 bg-accent/10 text-accent"
-                        : "border-transparent text-foreground/40 hover:text-foreground/75 hover:bg-foreground/5 hover:border-border",
+                        ? "border-accent/20 bg-accent/5 shadow-sm"
+                        : "border-transparent text-foreground/50 hover:bg-foreground/[0.03] hover:text-foreground",
                     ].join(" ")}
-                    style={isActive ? { borderColor: `${accentColor}30`, backgroundColor: `${accentColor}12`, color: accentColor } : {}}
+                    style={isActive ? { borderColor: `${accentColor}40`, backgroundColor: `${accentColor}10`, color: accentColor } : {}}
                   >
                     <span
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full transition-all duration-300"
-                      style={{ height: isActive ? "55%" : "0%", background: accentColor, opacity: isActive ? 1 : 0 }}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[4px] rounded-r-full transition-all duration-300"
+                      style={{ height: isActive ? "40%" : "0%", background: accentColor }}
                     />
 
-                    <span className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center" style={isActive ? { background: `${accentColor}1a` } : {}}>
-                      <Icon size={16} />
+                    {/* Larger Icon Container */}
+                    <span className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" 
+                          style={isActive ? { background: `${accentColor}20` } : { background: 'rgba(0,0,0,0.03)' }}>
+                      <Icon size={20} />
                     </span>
 
                     {expanded && (
-                      <span className="flex-1 min-w-0 text-left transition-all duration-200">
-                        <span className="block text-[12.5px] font-semibold leading-tight tracking-[-0.01em] truncate">{label}</span>
-                        <span className="block text-[9.5px] leading-tight mt-0.5 opacity-50 truncate font-devanagari">{sub}</span>
+                      <span className="flex-1 min-w-0 text-left">
+                        <span className="block text-[15px] font-bold leading-none tracking-tight">{label}</span>
+                        <span className="block text-[12px] leading-none mt-1.5 opacity-60 font-devanagari">{sub}</span>
                       </span>
                     )}
                   </button>
 
-                  {/* Tooltip for collapsed mode */}
-                  {!expanded && isHovered && (
-                    <div className="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 z-50 rounded-xl px-3 py-2.5 shadow-2xl border border-border bg-card text-foreground whitespace-nowrap">
-                      <p className="text-[12px] font-semibold" style={{ color: accentColor }}>{label}</p>
-                      <p className="text-[10px] text-foreground/40 mt-0.5 font-mono">{desc}</p>
+                  {/* Tooltip for collapsed mode - Larger */}
+                  {!expanded && hoveredTab === id && (
+                    <div className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 z-50 rounded-2xl px-4 py-3 shadow-2xl border border-border bg-card whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-200">
+                      <p className="text-sm font-bold" style={{ color: accentColor }}>{label} <span className="font-devanagari ml-2 opacity-50">{sub}</span></p>
+                      <p className="text-[11px] text-foreground/40 mt-1 font-medium">{desc}</p>
                     </div>
                   )}
                 </div>
@@ -264,26 +186,38 @@ export default function NepaliTypingTest() {
             })}
           </nav>
 
-          {/* Bottom section */}
-          <div className="px-2.5 pb-4 pt-2 border-t border-border flex flex-col gap-1">
+          {/* Bottom section - Larger buttons */}
+          <div className="px-3 pb-6 pt-4 border-t border-border flex flex-col gap-2">
             <button
               onClick={toggleTheme}
               className={[
-                "w-full flex items-center rounded-xl border border-transparent text-foreground/35 hover:text-foreground/70 hover:bg-foreground/5 hover:border-border transition-all",
-                expanded ? "px-3 py-2.5 gap-3" : "py-2.5 justify-center",
+                "w-full flex items-center rounded-2xl border border-transparent text-foreground/40 hover:text-foreground hover:bg-foreground/[0.03] transition-all",
+                expanded ? "px-4 py-3.5 gap-4" : "py-3.5 justify-center",
               ].join(" ")}
             >
-              <span className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-foreground/5">
-                {theme === "dark" ? <IconSun size={16} /> : <IconMoon size={16} />}
+              <span className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center bg-foreground/[0.03]">
+                {theme === "dark" ? <IconSun size={20} /> : <IconMoon size={20} />}
               </span>
               {expanded && (
-                <span className="flex-1 min-w-0 text-left">
-                  <span className="block text-[12px] font-semibold text-foreground/60">{theme === "dark" ? "Light mode" : "Dark mode"}</span>
-                  <span className="block text-[9.5px] font-mono text-foreground/25 mt-0.5">Switch Theme</span>
+                <span className="flex-1 text-left">
+                  <span className="block text-sm font-bold text-foreground/70">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+                  <span className="block text-[10px] font-mono text-foreground/30 uppercase tracking-tighter">Toggle Appearance</span>
                 </span>
               )}
             </button>
-            {expanded && <p className="text-[9px] font-mono text-foreground/15 text-center pt-1">v1.0 · Unicode Traditional</p>}
+
+            <button
+              onClick={toggleSidebar}
+              className={[
+                "w-full flex items-center rounded-2xl border border-border/50 text-foreground/40 hover:text-foreground hover:bg-foreground/[0.03] transition-all",
+                expanded ? "px-4 py-3 gap-4" : "py-3 justify-center",
+              ].join(" ")}
+            >
+              <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+                {expanded ? <IconChevronLeft size={20} /> : <IconChevronRight size={20} />}
+              </span>
+              {expanded && <span className="text-sm font-bold">Collapse</span>}
+            </button>
           </div>
         </aside>
 
