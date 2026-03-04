@@ -1,7 +1,7 @@
 // ─── Shared Types ─────────────────────────────────────────────────────────────
 
 export type Theme = "dark" | "light";
-export type TabId = "test" | "learn" | "stats";
+export type TabId = "home" | "test" | "learn" | "stats";
 export type TimerDuration = 15 | 30 | 60 | 0;
 
 export interface TestRecord {

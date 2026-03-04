@@ -5,63 +5,67 @@ import { TextDisplay } from "@/components/ui/TextDisplay";
 import { NepaliKeyboard, getKeyHighlight } from "@/components/keyboard/NepaliKeyboard";
 import { IconX, IconLightbulb, IconCheck } from "@/components/ui/Icons";
 import { LESSONS } from "@/constants";
-import { StatCell } from "@/components/ui/SharedUI";
+// StatCell no longer needed in LessonPanel — inline stats used instead
 import type { Lesson } from "@/types";
 
-const LEVEL_STYLE = {
-  beginner:     { dot: "bg-green-400",  text: "text-green-500",  label: "Beginner"     },
-  intermediate: { dot: "bg-blue-400",   text: "text-blue-500",   label: "Intermediate" },
-  advanced:     { dot: "bg-amber-400", text: "text-amber-500", label: "Advanced"     },
-};
-
-// ─── LessonCard ───────────────────────────────────────────────────────────────
-function LessonCard({ lesson, isActive, onClick }: { lesson: Lesson; isActive: boolean; onClick: () => void }) {
-  const lv = LEVEL_STYLE[lesson.level];
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left rounded-xl px-4 py-3 border transition-all relative overflow-hidden group ${
-        isActive
-          ? "border-accent shadow-lg shadow-accent/10"
-          : "border-transparent hover:bg-foreground/5 opacity-60 hover:opacity-100"
-      }`}
-      style={{ 
-        backgroundColor: isActive ? 'var(--color-card)' : 'transparent',
-      }}
-    >
-      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-accent" />}
-      <div className="flex items-center gap-1.5 mb-1">
-        <span className={`w-1 h-1 rounded-full ${lv.dot}`} />
-        <span className={`text-[8px] font-mono uppercase tracking-widest ${lv.text}`}>{lv.label}</span>
-      </div>
-      <div className="text-sm font-bold text-foreground leading-tight" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>
-        {lesson.title}
-      </div>
-      <div className="text-[10px] text-foreground/40 mt-1 line-clamp-1">{lesson.subtitle}</div>
-    </button>
-  );
-}
+const LEVEL_META = {
+  beginner: {
+    dot:    "bg-green-400",
+    text:   "text-green-500",
+    accent: "#22c55e",
+    label:  "Beginner",
+  },
+  intermediate: {
+    dot:    "bg-blue-400",
+    text:   "text-blue-400",
+    accent: "#60a5fa",
+    label:  "Intermediate",
+  },
+  advanced: {
+    dot:    "bg-amber-400",
+    text:   "text-amber-400",
+    accent: "#fbbf24",
+    label:  "Advanced",
+  },
+} as const;
 
 // ─── LessonPanel ─────────────────────────────────────────────────────────────
-function LessonPanel({ lesson, onClose }: { lesson: Lesson; onClose: () => void }) {
-  const lv = LEVEL_STYLE[lesson.level];
+function LessonPanel({
+  lesson,
+  onClose,
+  onNext,
+  onPrev,
+  hasNext,
+  hasPrev,
+}: {
+  lesson: Lesson;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+  hasNext: boolean;
+  hasPrev: boolean;
+}) {
+  const lv         = LEVEL_META[lesson.level];
   const canShuffle = lesson.level !== "advanced";
 
   const [isShiftActive, setIsShiftActive] = useState(false);
-  const [loopCount, setLoopCount] = useState(0);
-  const [flashDone, setFlashDone] = useState(false);
+  const [loopCount,     setLoopCount]     = useState(0);
+  const [flashDone,     setFlashDone]     = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const lt = useLessonTyping(lesson, canShuffle);
+  const lt       = useLessonTyping(lesson, canShuffle);
 
   useEffect(() => { setTimeout(() => inputRef.current?.focus(), 100); }, [lesson]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => { if (e.key === "Shift") setIsShiftActive(true); };
-    const up = (e: KeyboardEvent) => { if (e.key === "Shift") setIsShiftActive(false); };
+    const up   = (e: KeyboardEvent) => { if (e.key === "Shift") setIsShiftActive(false); };
     window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
-    return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); };
+    window.addEventListener("keyup",   up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup",   up);
+    };
   }, []);
 
   useEffect(() => {
@@ -76,94 +80,298 @@ function LessonPanel({ lesson, onClose }: { lesson: Lesson; onClose: () => void 
     return () => clearTimeout(t);
   }, [lt.done, canShuffle, lesson.content]);
 
-  const nextChar = lt.graphemes[lt.typedGraphemes.length] ?? "";
+  const nextChar  = lt.graphemes[lt.typedGraphemes.length] ?? "";
   const highlight = getKeyHighlight(nextChar);
-  const progress = lt.graphemes.length > 0 ? (lt.typedGraphemes.length / lt.graphemes.length) * 100 : 0;
+  const progress  =
+    lt.graphemes.length > 0
+      ? (lt.typedGraphemes.length / lt.graphemes.length) * 100
+      : 0;
 
   return (
-    <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-right-4 duration-500">
-      
-      {/* ── Header & Stats ────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        <div className="lg:col-span-7">
-          <div className="flex items-center gap-3 mb-2">
-             <button onClick={onClose} className="p-2 hover:bg-foreground/5 rounded-full transition-colors text-foreground/30 hover:text-foreground">
-               <IconX size={18} />
-             </button>
-             <div className="h-4 w-px bg-border" />
-             <span className={`text-[10px] font-mono uppercase tracking-widest ${lv.text} font-bold`}>{lv.label} Lesson</span>
-          </div>
-          <h2 className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>
+    <div className="flex flex-col gap-3 p-4 animate-in fade-in duration-300">
+
+      {/* ── Compact single-row header ─────────────────────────────── */}
+      <div className="flex items-center gap-3 bg-card border border-border rounded-2xl px-4 py-3 shadow-sm">
+
+        {/* Close */}
+        <button
+          onClick={onClose}
+          className="flex-shrink-0 p-1.5 hover:bg-foreground/8 rounded-lg transition-colors text-foreground/25 hover:text-foreground"
+        >
+          <IconX size={15} />
+        </button>
+
+        <div className="w-px h-8 bg-border flex-shrink-0" />
+
+        {/* Level badge + lesson number */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <span
+            className="text-[10px] font-mono font-bold uppercase tracking-widest"
+            style={{ color: lv.accent }}
+          >
+            {lv.label}
+          </span>
+          <span className="text-foreground/20 text-[10px] font-mono">
+            #{String(LESSONS.findIndex((l) => l.id === lesson.id) + 1).padStart(2, "0")}
+          </span>
+        </div>
+
+        <div className="w-px h-8 bg-border flex-shrink-0" />
+
+        {/* Title + subtitle */}
+        <div className="flex items-baseline gap-3 min-w-0 flex-1">
+          <h2
+            className="text-xl font-bold text-foreground leading-none whitespace-nowrap truncate"
+            style={{ fontFamily: "'Noto Serif Devanagari', serif" }}
+          >
             {lesson.title}
           </h2>
-          <p className="text-sm text-foreground/40 mt-1">{lesson.subtitle}</p>
+          <span className="text-[12px] text-foreground/35 truncate hidden sm:block">
+            {lesson.subtitle}
+          </span>
         </div>
 
-        <div className="lg:col-span-5 flex justify-end gap-8 bg-card border border-border p-4 px-6 rounded-2xl shadow-sm">
-          <StatCell label="Accuracy" value={lt.accuracy} unit="%" valueColor={lt.accuracy > 90 ? "text-green-500" : "text-amber-500"} />
-          <StatCell label="Loops" value={loopCount + 1} />
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-foreground/40">Progress</span>
-            <span className="text-2xl font-mono font-semibold text-accent">{Math.round(progress)}%</span>
+        {/* Stats — inline on the right */}
+        <div className="flex items-center gap-5 flex-shrink-0 ml-auto">
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-foreground/35">Accuracy</span>
+            <span className={`text-lg font-bold font-mono leading-none ${lt.accuracy > 90 ? "text-green-500" : "text-amber-500"}`}>
+              {lt.accuracy}<span className="text-[11px] font-normal opacity-60">%</span>
+            </span>
+          </div>
+          <div className="w-px h-8 bg-border" />
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-foreground/35">Loops</span>
+            <span className="text-lg font-bold font-mono text-foreground leading-none">{loopCount + 1}</span>
+          </div>
+          <div className="w-px h-8 bg-border" />
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-foreground/35">Progress</span>
+            <span className="text-lg font-bold font-mono text-accent leading-none">
+              {Math.round(progress)}<span className="text-[11px] font-normal opacity-60">%</span>
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ── Progress Bar & Tip ────────────────────────────────────── */}
-      <div className="flex flex-col gap-4">
-        <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-accent transition-all duration-500 shadow-[0_0_10px_rgba(0,173,181,0.5)]" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-        
-        {/* <div className="flex gap-3 bg-accent/5 border border-accent/10 p-4 rounded-xl items-center">
-          <div className="bg-accent/20 p-2 rounded-lg text-accent">
-            <IconLightbulb size={18} />
-          </div>
-          <p className="text-xs text-foreground/70 italic leading-relaxed">
-            <span className="font-bold text-accent not-italic">Pro Tip:</span> {lesson.tip}
-          </p>
-        </div> */}
+      {/* Progress bar */}
+      <div className="h-1 w-full bg-foreground/5 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-accent transition-all duration-500 rounded-full"
+          style={{ width: `${progress}%`, boxShadow: "0 0 8px rgba(0,173,181,0.5)" }}
+        />
       </div>
 
-      {/* ── Main Action Area ──────────────────────────────────────── */}
-      <div className="flex flex-col gap-4 relative">
-        <TextDisplay 
-          graphemes={lt.graphemes} 
+      {/* Typing area */}
+      <div className="flex flex-col gap-3">
+        <TextDisplay
+          graphemes={lt.graphemes}
           typedGraphemes={lt.typedGraphemes}
           className="bg-card border border-border shadow-sm max-h-32"
           onClick={() => inputRef.current?.focus()}
         />
 
         {flashDone ? (
-          <div className="h-32 flex flex-col items-center justify-center bg-green-500/10 border-2 border-green-500/50 rounded-2xl animate-in zoom-in-95 duration-300">
+          <div className="h-28 flex flex-col items-center justify-center bg-green-500/10 border-2 border-green-500/40 rounded-2xl animate-in zoom-in-95 duration-300">
             <div className="bg-green-500 text-white p-2 rounded-full mb-2">
-              <IconCheck size={24} />
+              <IconCheck size={22} />
             </div>
-            <p className="text-green-500 font-bold text-lg">Lesson Complete!</p>
-            <p className="text-green-500/60 text-xs font-mono">Shuffling & Restarting...</p>
+            <p className="text-green-500 font-bold">Lesson Complete!</p>
+            <p className="text-green-500/50 text-xs font-mono mt-0.5">Shuffling & Restarting…</p>
           </div>
         ) : (
           <textarea
             ref={inputRef}
             value={lt.inputValue}
             onChange={(e) => lt.handleInput(e as any)}
-            className="w-full bg-card border-2 border-border focus:border-accent rounded-2xl p-6 text-3xl font-serif outline-none transition-all resize-none h-24 shadow-sm"
-            placeholder="Type the characters above..."
+            className="w-full bg-card border-2 border-border focus:border-accent rounded-2xl p-6 text-3xl outline-none transition-all resize-none h-24 shadow-sm"
+            placeholder="Type the characters above…"
             style={{ fontFamily: "'Noto Serif Devanagari', serif" }}
           />
         )}
       </div>
 
-      {/* ── Keyboard ──────────────────────────────────────────────── */}
-      <div className="flex justify-center w-full mt-2">
-        <NepaliKeyboard 
-          highlight={flashDone ? undefined : highlight} 
-          isShiftActive={isShiftActive} 
+      {/* Keyboard */}
+      <div className="flex justify-center w-full">
+        <NepaliKeyboard
+          highlight={flashDone ? undefined : highlight}
+          isShiftActive={isShiftActive}
         />
       </div>
+
+      {/* Prev / Next */}
+      <div className="flex items-center justify-between pt-1.5 border-t border-border">
+        <button
+          onClick={onPrev}
+          disabled={!hasPrev}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-border hover:bg-foreground/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+        >
+          ← Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!hasNext}
+          className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold bg-accent/10 border border-accent/30 text-accent hover:bg-accent/15 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+        >
+          Next lesson →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── LessonCard (in course overview grid) ────────────────────────────────────
+function LessonCard({
+  lesson,
+  globalIdx,
+  onClick,
+}: {
+  lesson: Lesson;
+  globalIdx: number;
+  onClick: () => void;
+}) {
+  const lv = LEVEL_META[lesson.level];
+
+  return (
+    <button
+      onClick={onClick}
+      className="group text-left flex flex-col gap-3 p-4 rounded-2xl border border-border bg-card/50 hover:bg-card hover:border-accent/25 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+    >
+      <div className="flex items-center justify-between">
+        <span
+          className="text-xs font-mono font-bold tabular-nums"
+          style={{ color: lv.accent }}
+        >
+          {String(globalIdx + 1).padStart(2, "0")}
+        </span>
+        <span className={`w-2 h-2 rounded-full ${lv.dot}`} />
+      </div>
+
+      <p
+        className="text-[15px] font-bold text-foreground/75 group-hover:text-foreground leading-tight transition-colors"
+        style={{ fontFamily: "'Noto Serif Devanagari', serif" }}
+      >
+        {lesson.title}
+      </p>
+
+      <p className="text-[11px] text-foreground/35 font-mono leading-snug flex-1">
+        {lesson.subtitle}
+      </p>
+
+      <span
+        className="text-[9px] font-mono font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border self-start"
+        style={{
+          color:           lv.accent,
+          borderColor:     `${lv.accent}30`,
+          backgroundColor: `${lv.accent}10`,
+        }}
+      >
+        {lv.label}
+      </span>
+    </button>
+  );
+}
+
+// ─── CourseOverview ───────────────────────────────────────────────────────────
+function CourseOverview({ onPick }: { onPick: (l: Lesson) => void }) {
+  const grouped = useMemo(
+    () => ({
+      beginner:     LESSONS.filter((l) => l.level === "beginner"),
+      intermediate: LESSONS.filter((l) => l.level === "intermediate"),
+      advanced:     LESSONS.filter((l) => l.level === "advanced"),
+    }),
+    []
+  );
+
+  const globalIdx = (lesson: Lesson) => LESSONS.findIndex((l) => l.id === lesson.id);
+
+  return (
+    <div className="p-6 pb-12 flex flex-col gap-10 max-w-5xl">
+
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-accent/70">
+            Curriculum
+          </p>
+          <h1 className="text-4xl font-bold text-foreground tracking-tight leading-none">
+            Master Nepali Typing
+          </h1>
+          <p className="text-[15px] text-foreground/45 leading-relaxed max-w-lg mt-1">
+            {LESSONS.length} lessons across 3 levels. Follow the order for the best results,
+            or jump straight into any lesson.
+          </p>
+        </div>
+
+        <button
+          onClick={() => onPick(LESSONS[0])}
+          className="flex-shrink-0 px-6 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm hover:bg-accent/85 active:scale-[0.97] transition-all shadow-lg shadow-accent/20 self-start sm:self-auto"
+        >
+          Start from beginning →
+        </button>
+      </div>
+
+      {/* ── Feature pills ────────────────────────────────────────── */}
+      <div className="flex gap-2.5 flex-wrap">
+        {(
+          [
+            { symbol: "↻", label: "Auto-Loop",  color: "#00ADB5" },
+            { symbol: "⇄", label: "Shuffle",    color: "#60a5fa" },
+            { symbol: "◎", label: "Pro-Stats",  color: "#fbbf24" },
+            { symbol: "⌨", label: "Neon Guide", color: "#c084fc" },
+          ] as { symbol: string; label: string; color: string }[]
+        ).map((f) => (
+          <div
+            key={f.label}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card/50 select-none"
+          >
+            <span style={{ color: f.color, fontSize: 13 }}>{f.symbol}</span>
+            <span className="text-[12px] text-foreground/55 font-medium">{f.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Level sections ───────────────────────────────────────── */}
+      {(["beginner", "intermediate", "advanced"] as const).map((level) => {
+        const lv   = LEVEL_META[level];
+        const list = grouped[level];
+
+        return (
+          <div key={level} className="flex flex-col gap-4">
+
+            {/* Section header */}
+            <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-2 px-3.5 py-1 rounded-full border text-[11px] font-mono font-bold uppercase tracking-widest"
+                style={{
+                  color:           lv.accent,
+                  borderColor:     `${lv.accent}35`,
+                  backgroundColor: `${lv.accent}0d`,
+                }}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${lv.dot}`} />
+                {lv.label}
+              </div>
+              <span className="text-[11px] text-foreground/25 font-mono">
+                {list.length} lessons
+              </span>
+              <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, ${lv.accent}20, transparent)` }} />
+            </div>
+
+            {/* Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+              {list.map((lesson) => (
+                <LessonCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  globalIdx={globalIdx(lesson)}
+                  onClick={() => onPick(lesson)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -172,70 +380,31 @@ function LessonPanel({ lesson, onClose }: { lesson: Lesson; onClose: () => void 
 export function LearnTab() {
   const [selected, setSelected] = useState<Lesson | null>(null);
 
-  const grouped = useMemo(() => ({
-    beginner:     LESSONS.filter((l) => l.level === "beginner"),
-    intermediate: LESSONS.filter((l) => l.level === "intermediate"),
-    advanced:     LESSONS.filter((l) => l.level === "advanced"),
-  }), []);
+  const currentIndex = selected
+    ? LESSONS.findIndex((l) => l.id === selected.id)
+    : -1;
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < LESSONS.length - 1;
+
+  const goNext = () => { if (hasNext) setSelected(LESSONS[currentIndex + 1]); };
+  const goPrev = () => { if (hasPrev) setSelected(LESSONS[currentIndex - 1]); };
 
   return (
-    <div className="flex gap-6 max-w-7xl mx-auto p-2">
-
-      {/* Sidebar: Lesson List */}
-      <div className="w-64 shrink-0 flex flex-col gap-6 sticky top-4">
-        <div className="bg-card border border-border p-4 rounded-3xl shadow-sm">
-          <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/30 mb-4 px-2">Curriculum</h3>
-          
-          <div className="flex flex-col gap-6 overflow-y-auto nepali-scroll pr-2 max-h-[70vh]">
-            {(["beginner", "intermediate", "advanced"] as const).map((level) => (
-              <div key={level}>
-                <div className="flex items-center gap-2 mb-3 px-2">
-                  <span className={`w-1.5 h-1.5 rounded-full ${LEVEL_STYLE[level].dot}`} />
-                  <span className={`text-[9px] font-mono font-bold uppercase tracking-widest ${LEVEL_STYLE[level].text}`}>
-                    {level}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  {grouped[level].map((l) => (
-                    <LessonCard key={l.id} lesson={l} isActive={selected?.id === l.id} onClick={() => setSelected(l)} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Panel: Lesson Content */}
-      <div className="flex-1 min-h-[80vh]">
-        {selected ? (
-          <LessonPanel key={selected.id} lesson={selected} onClose={() => setSelected(null)} />
-        ) : (
-          <div className="h-full flex flex-col items-center justify-center text-center p-12 bg-card/20 border-2 border-dashed border-border rounded-[3rem]">
-            <div className="w-20 h-20 rounded-3xl bg-card border border-border flex items-center justify-center mb-6 shadow-xl">
-              <IconLightbulb size={40} className="text-accent animate-pulse" />
-            </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Master Nepali Typing</h2>
-            <p className="text-foreground/40 max-w-sm text-sm leading-relaxed mb-8">
-              Select a lesson from the sidebar to begin. We recommend starting with Vowels to build a strong foundation.
-            </p>
-            
-            <div className="grid grid-cols-2 gap-4 w-full max-w-md">
-              {[
-                { label: "Auto-Loop", desc: "No stop, just flow" },
-                { label: "Shuffle", desc: "Random characters" },
-                { label: "Pro-Stats", desc: "Real-time accuracy" },
-                { label: "Neon Guide", desc: "Visual keyboard tips" },
-              ].map((item) => (
-                <div key={item.label} className="bg-card border border-border p-4 rounded-2xl text-left">
-                  <p className="text-[10px] font-bold uppercase text-accent mb-1">{item.label}</p>
-                  <p className="text-[10px] text-foreground/40">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+    <div className="flex-1 overflow-y-auto nepali-scroll min-h-screen max-w-6xl  mx-auto">
+      {selected ? (
+        <LessonPanel
+          key={selected.id}
+          lesson={selected}
+          onClose={() => setSelected(null)}
+          onNext={goNext}
+          onPrev={goPrev}
+          hasNext={hasNext}
+          hasPrev={hasPrev}
+        />
+      ) : (
+        <CourseOverview onPick={setSelected} />
+      )}
     </div>
   );
 }
