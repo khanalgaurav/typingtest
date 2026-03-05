@@ -57,27 +57,17 @@ export const SAMPLES: string[] = [
 
 // ─── Lessons ───────────────────────────────────────────────────────────────────
 export const LESSONS: Lesson[] = [
-  { id: "vowels", title: "Stage 1 • Core Vowels", subtitle: "स्वर (अ–औ)", level: "beginner", content: "अ आ इ ई उ ऊ ए ऐ ओ औ अं अः", tip: "Master these first. Every Nepali syllable is built on a vowel sound." },
-
-  { id: "ka-group", title: "Stage 2 • Velar Sounds", subtitle: "क-वर्ग (Throat)", level: "beginner", content: "क ख ग घ ङ क ख ग घ ङ क ख ग घ ङ", tip: "Produced from the back of the mouth. Focus on aspirated (ख, घ) vs unaspirated (क, ग)." },
-
-  { id: "cha-group", title: "Stage 3 • Palatal Sounds", subtitle: "च-वर्ग (Middle Tongue)", level: "beginner", content: "च छ ज झ ञ च छ ज झ ञ च छ ज झ ञ", tip: "Your tongue rises toward the hard palate. Keep rhythm steady while typing." },
-
-  { id: "ta1-group", title: "Stage 4 • Retroflex Sounds", subtitle: "ट-वर्ग (Curled Tongue)", level: "beginner", content: "ट ठ ड ढ ण ट ठ ड ढ ण ट ठ ड ढ ण", tip: "Curl your tongue slightly back. These are different from dental त-वर्ग sounds." },
-
-  { id: "ta2-group", title: "Stage 5 • Dental Sounds", subtitle: "त-वर्ग (Teeth Touch)", level: "beginner", content: "त थ द ध न त थ द ध न त थ द ध न", tip: "Tongue touches the back of upper teeth. Stay relaxed and type evenly." },
-
-  { id: "pa-group", title: "Stage 6 • Labial Sounds", subtitle: "प-वर्ग (Lip Sounds)", level: "beginner", content: "प फ ब भ म प फ ब भ म प फ ब भ म", tip: "Both lips come together. Notice the extra air in aspirated letters (फ, भ)." },
-
-  { id: "others", title: "Stage 7 • Special Consonants", subtitle: "य र ल व श ष स ह क्ष त्र ज्ञ", level: "intermediate", content: "य र ल व श ष स ह क्ष त्र ज्ञ", tip: "Includes semi-vowels, sibilants, and common conjunct letters used in real words." },
-
-  { id: "matras", title: "Stage 8 • Vowel Signs", subtitle: "मात्रा अभ्यास", level: "intermediate", content: "का कि की कु कू के कै को कौ कं कः", tip: "Matras modify the base consonant. Accuracy matters more than speed here." },
-
-  { id: "words", title: "Stage 9 • Common Words", subtitle: "दैनिक शब्दहरू", level: "intermediate", content: "नेपाल पानी खाना घर मान्छे काम जान आउ भात दाल", tip: "High-frequency everyday words. Aim for smooth, continuous typing." },
-
-  { id: "verbs", title: "Stage 10 • Core Verbs", subtitle: "सामान्य क्रियाहरू", level: "intermediate", content: "गर्नु जानु आउनु खानु पिउनु सुत्नु उठ्नु बस्नु हेर्नु सुन्नु", tip: "These verbs form most sentences. Build speed without sacrificing accuracy." },
-
-  { id: "sentences", title: "Stage 11 • Sentence Flow", subtitle: "सरल वाक्य अभ्यास", level: "advanced", content: "म नेपाली हुँ। मेरो नाम के हो? यो राम्रो छ। हामी जान्छौं।", tip: "Focus on rhythm and punctuation. Maintain consistent speed throughout the sentence." },
+  { id: "vowels", title: "स्वरहरू", subtitle: "Basic Vowels", level: "beginner", content: "अ आ इ ई उ ऊ ए ऐ ओ औ अं अः", tip: "Vowels are the foundation of Nepali script. Every syllable is built on a vowel sound." },
+  { id: "ka-group", title: "क वर्ग", subtitle: "Ka Group (Velar)", level: "beginner", content: "क ख ग घ ङ क ख ग घ ङ क ख ग घ ङ", tip: "Velar stops — your throat closes gently. Notice aspirated (ख, घ) vs unaspirated (क, ग) pairs." },
+  { id: "cha-group", title: "च वर्ग", subtitle: "Cha Group (Palatal)", level: "beginner", content: "च छ ज झ ञ च छ ज झ ञ च छ ज झ ञ", tip: "Palatal sounds — your tongue rises toward the hard palate behind your upper teeth." },
+  { id: "ta1-group", title: "ट वर्ग", subtitle: "Retroflex Group", level: "beginner", content: "ट ठ ड ढ ण ट ठ ड ढ ण ट ठ ड ढ ण", tip: "Retroflex consonants — curl your tongue backward toward the roof of your mouth." },
+  { id: "ta2-group", title: "त वर्ग", subtitle: "Ta Group (Dental)", level: "beginner", content: "त थ द ध न त थ द ध न त थ द ध न", tip: "Dental consonants — tongue touches the back of your upper teeth, not the palate." },
+  { id: "pa-group", title: "प वर्ग", subtitle: "Pa Group (Labial)", level: "beginner", content: "प फ ब भ म प फ ब भ म प फ ब भ म", tip: "Bilabial sounds — both lips come together. Feel the burst of air in aspirated forms." },
+  { id: "others", title: "अन्य व्यञ्जन", subtitle: "Other Consonants", level: "intermediate", content: "य र ल व श ष स ह क्ष त्र ज्ञ", tip: "Semi-vowels, sibilants, and conjunct consonants that appear in common words." },
+  { id: "matras", title: "मात्राहरू", subtitle: "Vowel Signs", level: "intermediate", content: "का कि की कु कू के कै को कौ कं कः", tip: "Matras modify consonants to change their vowel sound. The base consonant stays the same." },
+  { id: "words", title: "सामान्य शब्द", subtitle: "Common Words", level: "intermediate", content: "नेपाल पानी खाना घर मान्छे काम जान आउ भात दाल", tip: "High-frequency words. Drill these until your fingers move automatically without thinking." },
+  { id: "verbs", title: "क्रियाहरू", subtitle: "Common Verbs", level: "intermediate", content: "गर्नु जानु आउनु खानु पिउनु सुत्नु उठ्नु बस्नु हेर्नु सुन्नु", tip: "Core verbs form the backbone of any sentence. Master the infinitive form first." },
+  { id: "sentences", title: "सरल वाक्य", subtitle: "Simple Sentences", level: "advanced", content: "म नेपाली हुँ। मेरो नाम के हो? यो राम्रो छ। हामी जान्छौं।", tip: "Full sentences test your rhythm. Aim for consistent flow — not just speed bursts." },
 ];
 
 // ─── Keyboard Layout (Nepali Traditional) ─────────────────────────────────────
